@@ -11,32 +11,27 @@ public class Solution {
 	private List<Integer> res;
     public List<Integer> postorderTraversal(TreeNode root) {
         res = new ArrayList<>();
-        if (root != null) {
-            solve(root);
-        }
+        solve(root);
         return res;
     }
 
-    private void solve(TreeNode root) {
+    private void solve(TreeNode p) {
         Stack<WrapperNode> s = new Stack<>();
-        s.push(new WrapperNode(root, false));
-        while (!s.empty()) {
-            WrapperNode wrapperNode = s.peek();
-            while (wrapperNode.node.left != null) {
-                s.push(new WrapperNode(wrapperNode.node.left, false));
+        while (p != null || !s.empty()) {
+            while (p != null) {
+                WrapperNode node = new WrapperNode(p, false);
+                s.push(node);
+                p = p.left;
             }
-            wrapperNode = s.peek();
-            while (wrapperNode.node != null) {
-                if (wrapperNode.isSecondTraversal) {
-                    res.add(s.pop().node.val);
-                    if (s.isEmpty()) {
-                        break;
-                    }
-                    wrapperNode = s.peek();
+            if (!s.isEmpty()) {
+                WrapperNode node = s.pop();
+                if (node.isSecondTraversal) {
+                    res.add(node.node.val);
+                    p = null;
                 } else {
-                    wrapperNode.isSecondTraversal = true;
-                    s.push(new WrapperNode(wrapperNode.node.right, false));
-                    break;
+                    node.isSecondTraversal = true;
+                    s.push(node);
+                    p = node.node.right;
                 }
             }
         }
